@@ -1,37 +1,18 @@
 <!doctype html>
 <html>
   <head>
-    <title>DnDiscord</title>
+	  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+	  <title>DnDiscord</title>
     <script src="popup.js"></script>
  	<link rel="stylesheet" href="popup.css">
   </head>
   <body>
     <h1>DnDiscord</h1>
-
-
-	<section id="readroot" style="display: none">
-		<fieldset>
-			<label for="active">Active</label>
-		  	<input type="checkbox" class="active" name="active">
-		</fieldset>
-		<fieldset>
-		 	<label for="character_name">Character Page</label>
-		  	<input type="text" class="character-name" name="character_name">
-		</fieldset>
-		<fieldset>
-		 	<label for="destination_url">Destination URL</label>
-		  	<input type="text" class="destination-url" name="destination_url">
-		</fieldset>
-		<fieldset>
-			<input type="button" class="remove-character" value="Remove character"/>
-		</fieldset>
-	</section>
-
 	<form id="characterform">
 		<div id="writeroot"></div>
 		<input type="button" id="addcharacter" value="Add new character" />
 		<input type="submit" value="Save" />
-		<input type="submit" value="Discard changes" />
+		<input type="submit" value="Discard changes" formnovalidate />
 	</form>
   </body>
 </html>

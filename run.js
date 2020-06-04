@@ -1,24 +1,15 @@
-/*
-todo: form to enter webhook
-auto load? and then a button to say connect or disconnect from discord + status on the page itself
-if we autoload only on character sheets that have been connected/disconnected
-gotta save the connect/disconnect somewhere. disconnect = destroy all observers? connect is set up.
-
-
-*/
-
-console.log();
-
+// Load data and run if match is found.
 chrome.storage.sync.get(['data'], function (result) {
     let data = result.data;
     data.forEach(function (item, index) {
         if (item.character === window.location.href) {
+            // console.log(item);
             DnDiscord.run(item.active, item.destination);
         }
     });
 });
 
-
+// Listen to save event from popup and run if match is found.
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         let data = request.data;
@@ -30,7 +21,10 @@ chrome.runtime.onMessage.addListener(
         return true;
     });
 
-document.addEventListener('visibilitychange', function() {
+// Listen to loss and gain of focus and run on change. Bit heavyhanded
+// but MutationObserver seemed to stop working when spinning up if a character
+// gets activated in the popup from another tab.
+document.addEventListener('visibilitychange', function () {
     chrome.storage.sync.get(['data'], function (result) {
         let data = result.data;
         data.forEach(function (item, index) {
@@ -41,22 +35,27 @@ document.addEventListener('visibilitychange', function() {
     });
 })
 
-
 var DnDiscord = {
     active: false,
     destination: null,
-    run: function (active) {
+    template: `
+    <div id="dndiscord-connection-status" style="margin-top: -18px; height: 18px;width: 100%;text-align: right;background-color: BGR; color: #fff">
+        <p>This character's connection to a Discord channel is currently {status}.</p>
+    </div>
+    `,
+    run: function (active, destination) {
         var _this = this;
-        console.log('starting run!')
+        // console.log('starting run!')
         this.active = active;
-        this.destination = window.location.href;
+        this.destination = destination;
         if (this.active && this.destination && document.visibilityState == 'visible') {
-            console.log('spinning up');
+            // console.log('spinning up');
             this.spinUp();
         } else {
-            console.log('tearing down')
+            // console.log('tearing down')
             this.teardown();
         }
+        this.showConnectionStatus();
     },
     diceObserver: new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
@@ -74,14 +73,12 @@ var DnDiscord = {
 
                     let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
 
-                    //	var xhr = new XMLHttpRequest();
-                    //	xhr.open("POST", discordWebhook, true);
-                    //	xhr.setRequestHeader('Content-Type', 'application/json');
-                    //	xhr.send(JSON.stringify({
-                    //		content: msg
-                    //	}));
-
-                    console.log(msg);
+                    // Do an extra check here before sending
+                    if (DnDiscord.active && DnDiscord.destination) {
+                        // console.log('sending to ' + DnDiscord.destination)
+                        DnDiscord.sendToDiscord(results);
+                    }
+                    // console.log(msg);
                 }
             }
         })
@@ -89,7 +86,28 @@ var DnDiscord = {
     popupObserver: new MutationObserver(function (mutations) {
         DnDiscord.ensureObservation();
     }),
-    ensureObservation: function ensureObservation() {
+    sendToDiscord: function (results) {
+        let payload = {
+            "embeds": [
+                {
+                    "title": results.infoBreakdown + " = ** " + results.rolledTotal + "**",
+                    "url": "https://discordapp.com",
+                    "color": 12127179,
+                    "author": {
+                        "name": results.character,
+                        "url": window.location.href,
+                        "icon_url": DnDiscord.getCharacterAvatar()
+                    },
+                    "description": results.rollDetail + results.rollType + " `[" + results.rolledDice + "]`"
+                }
+            ]
+        }
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", DnDiscord.destination, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(payload));
+    },
+    ensureObservation: function () {
         let dicePopup = document.getElementById('noty_layout__bottomRight');
         if (dicePopup === null) {
             dicePopup = document.createElement('div');
@@ -107,16 +125,40 @@ var DnDiscord = {
     teardown: function () {
         this.popupObserver.disconnect();
         this.diceObserver.disconnect();
-        let dicePopup = document.getElementById('noty_layout__bottomRight');
-        dicePopup.parentNode.removeChild(dicePopup);
+        this.deleteDicePopup();
     },
     spinUp: function () {
         this.ensureObservation();
         this.popupObserver.observe(document.body, {
             childList: true
         });
+    },
+    deleteDicePopup: function () {
+        let dicePopup = document.getElementById('noty_layout__bottomRight');
+        if (dicePopup !== null) {
+            dicePopup.parentNode.removeChild(dicePopup);
+        }
+    },
+    showConnectionStatus: function () {
+        let connectionStatusElement = document.getElementById('dndiscord-connection-status');
+        if (connectionStatusElement !== null) {
+            connectionStatusElement.parentNode.removeChild(connectionStatusElement);
+        }
+        connectionStatusElement = this.createConnectionStatusHtmlElement();
+        document.body.appendChild(connectionStatusElement);
+        // console.log('writing connection status');
+    },
+    createConnectionStatusHtmlElement: function () {
+        let e = document.createElement('template');
+        let html = this.template.trim();
+        html = html.replace(/{status}/g, this.active ? 'active' : 'inactive');
+        html = html.replace('BGR', this.active ? '#1B9AF0' : '#FF0000');
+        e.innerHTML = html;
+        return e.content.firstChild;
+    },
+    getCharacterAvatar: function () {
+        let img = document.getElementsByClassName('ddbc-character-tidbits__avatar')[0];
+        let style = img.currentStyle || window.getComputedStyle(img, false);
+        return style.backgroundImage.slice(4, -1).replace(/"/g, "");
     }
 }
-
-
-

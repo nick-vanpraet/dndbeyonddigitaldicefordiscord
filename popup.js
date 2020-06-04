@@ -9,14 +9,14 @@ var template = `
 		</fieldset>
 		<fieldset>
 		 	<label for="character_page">DnDBeyond Character Sheet URL</label>
-		  	<input type="url" class="character-page" name="character_page-{index}" required data-replace-char>
+		  	<input type="url" class="character-page" name="character_page-{index}" placeholder="https://dndbeyond..." required data-replace-char>
 		</fieldset>
 		<fieldset>
 		 	<label for="destination_url">Discord Webhook</label>
-		  	<input type="url" class="destination-url" name="destination_url-{index}" required data-replace-url>
+		  	<input type="url" class="destination-url" name="destination_url-{index}" placeholder="https://discordapp..." required data-replace-url>
 		</fieldset>
 		<fieldset>
-			<input type="button" class="remove-character" value="Remove character"/>
+			<input type="button" class="remove-character" value="Remove"/>
 		</fieldset>
 	</section>
 `
@@ -43,6 +43,9 @@ function htmlToElement(html, i, data = {}) {
 
 
 function processFormSubmit(e) {
+    if (e.submitter.value !== 'Save') {
+        return;
+    }
     let form = document.getElementById('characterform');
     let results = [];
 
@@ -71,9 +74,9 @@ function processFormSubmit(e) {
                 return;
             }
             tabs.forEach(function (tab) {
-                console.log(tab);
+                // console.log(tab);
                 chrome.tabs.sendMessage(tab.id, {data: results}, function (response) {
-                    console.log('Sent message to connected tab.');
+                    // console.log('Sent message to connected tab.');
                 });
             });
         });

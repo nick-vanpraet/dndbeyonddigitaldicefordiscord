@@ -1,16 +1,19 @@
 {
   "manifest_version": 2,
-
   "name": "DnDiscord Dice Roller Plugin",
-  "description": "This extension will analyze a page using GTmetrix",
+  "description": "Connects DndBeyond's Digital Dice with Discord",
   "version": "1.0",
-
   "browser_action": {
-   "default_icon": "icon.png",
-   "default_popup": "popup.html"
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
   },
   "permissions": [
-   "activeTab",
-   "*://*.dndbeyond.com/"
-   ]
+    "activeTab",
+    "storage"
+  ],
+  "content_scripts": [{
+    "matches": ["https://www.dndbeyond.com/profile/*/characters/*"],
+    "exclude_matches": ["https://www.dndbeyond.com/profile/*/characters/*/*"],
+    "js": ["run.js"]
+  }]
 }

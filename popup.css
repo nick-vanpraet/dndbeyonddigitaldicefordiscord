@@ -1,11 +1,15 @@
 body {
     background-color: #1B9AF0;
-    width: 585px;
+    width: 700px;
     height: auto;
     padding: 0 10px 10px;
     font-weight: 700;
     color: white;
     font-family: Roboto, Helvetica, sans-serif;
+}
+
+* {
+    outline: none;
 }
 
 form section {

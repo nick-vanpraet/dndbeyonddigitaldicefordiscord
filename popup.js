@@ -1,3 +1,11 @@
+var popupWindow = window.open(
+    chrome.extension.getURL("popup.html"),
+    "exampleName",
+    "width=400,height=400"
+);
+//window.close();
+
+
 var counter = 0;
 
 
@@ -7,12 +15,16 @@ var template = `
 			<label for="active">Active</label>
 		  	<input type="checkbox" class="active" name="active-{index}" data-replace-check>
 		</fieldset>
+			<fieldset>
+			<label for="character_name-{index}">Name</label>
+		  	<input type="text" class="active" name="character_name-{index}" data-replace-name size="10">
+		</fieldset>
 		<fieldset>
-		 	<label for="character_page">DnDBeyond Character Sheet URL</label>
+		 	<label for="character_page-{index}">DnDBeyond Character Sheet URL</label>
 		  	<input type="url" class="character-page" name="character_page-{index}" placeholder="https://dndbeyond..." required data-replace-char>
 		</fieldset>
 		<fieldset>
-		 	<label for="destination_url">Discord Webhook</label>
+		 	<label for="destination_url-{index}">Discord Webhook</label>
 		  	<input type="url" class="destination-url" name="destination_url-{index}" placeholder="https://discordapp..." required data-replace-url>
 		</fieldset>
 		<fieldset>
@@ -36,6 +48,9 @@ function htmlToElement(html, i, data = {}) {
     if (data.active) {
         html = html.replace('data-replace-check', 'checked')
     }
+    if (data.name) {
+        html = html.replace('data-replace-name', 'value="' + data.name + '"')
+    }
 
     e.innerHTML = html;
     return e.content.firstChild;
@@ -57,11 +72,13 @@ function processFormSubmit(e) {
         let character = section.querySelector('[name="character_page-' + counter + '"]').value;
         let destination = section.querySelector('[name="destination_url-' + counter + '"]').value;
         let active = section.querySelector('[name="active-' + counter + '"]').checked;
+        let name = section.querySelector('[name="character_name-' + counter + '"]').value;
 
         let submitted = {
             character: character,
             destination: destination,
-            active: active
+            active: active,
+            name: name
         }
         results.push(submitted)
     }

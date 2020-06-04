@@ -9,7 +9,8 @@
   },
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "content_scripts": [{
     "matches": ["https://www.dndbeyond.com/profile/*/characters/*"],

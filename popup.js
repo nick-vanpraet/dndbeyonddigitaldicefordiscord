@@ -1,11 +1,3 @@
-var popupWindow = window.open(
-    chrome.extension.getURL("popup.html"),
-    "exampleName",
-    "width=400,height=400"
-);
-//window.close();
-
-
 var counter = 0;
 
 
@@ -86,6 +78,12 @@ function processFormSubmit(e) {
     chrome.storage.sync.set({
         data: results
     }, function () {
+
+        // Set show message
+        chrome.storage.local.set({
+            message: true
+        });
+
         chrome.tabs.query({url: "https://www.dndbeyond.com/*"}, function (tabs) {
             if (tabs.length === 0) {
                 return;
@@ -94,6 +92,7 @@ function processFormSubmit(e) {
                 // console.log(tab);
                 chrome.tabs.sendMessage(tab.id, {data: results}, function (response) {
                     // console.log('Sent message to connected tab.');
+                    // close window after this.
                 });
             });
         });
@@ -142,11 +141,28 @@ function init() {
     document.getElementById('characterform').addEventListener("submit", function (e) {
         return processFormSubmit(e);
     })
+    chrome.storage.local.get(['message'], function (result) {
+        console.log(result);
+        if (result.message) {
+            let message_container = document.getElementById('message-container');
+            if (message_container === null) {
+                document.body.appendChild(htmlToElement('<div id="message-container">Successfully saved changes.</div>', 0))
+            }
+            setTimeout(function () {
+                let message_container = document.getElementById('message-container');
+                // message_container.parentNode.removeChild(message_container);
+                message_container.style = 'opacity:0';
+            }, 500);
+            chrome.storage.local.set({
+                message: false
+            });
+        }
+    });
 }
 
 
 document.addEventListener('DOMContentLoaded', init, false);
-
+// init();
 
 /*
 document.addEventListener('DOMContentLoaded', function() {

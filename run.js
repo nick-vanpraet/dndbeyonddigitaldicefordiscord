@@ -1,8 +1,10 @@
+var currentLocation = [location.protocol, '//', location.host, location.pathname].join('');
+
 // Load data and run if match is found.
 chrome.storage.sync.get(['data'], function (result) {
     let data = result.data;
     data.forEach(function (item, index) {
-        if (item.character === window.location.href) {
+        if (item.character === currentLocation) {
             // console.log(item);
             DnDiscord.run(item.active, item.destination);
         }
@@ -14,7 +16,7 @@ chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         let data = request.data;
         data.forEach(function (item, index) {
-            if (item.character === window.location.href) {
+            if (item.character === currentLocation) {
                 DnDiscord.run(item.active, item.destination);
             }
         });
@@ -28,7 +30,7 @@ document.addEventListener('visibilitychange', function () {
     chrome.storage.sync.get(['data'], function (result) {
         let data = result.data;
         data.forEach(function (item, index) {
-            if (item.character === window.location.href) {
+            if (item.character === currentLocation) {
                 DnDiscord.run(item.active, item.destination);
             }
         });
@@ -95,7 +97,7 @@ var DnDiscord = {
                     "color": 12127179,
                     "author": {
                         "name": results.character,
-                        "url": window.location.href,
+                        "url": currentLocation,
                         "icon_url": DnDiscord.getCharacterAvatar()
                     },
                     "description": results.rollDetail + results.rollType + " `[" + results.rolledDice + "]`"
@@ -116,11 +118,12 @@ var DnDiscord = {
             dicePopup.setAttribute('aria-live', 'polite');
             dicePopup.setAttribute('class', 'noty_layout uncollapse');
             document.body.appendChild(dicePopup);
-            // Attach the observer
-            this.diceObserver.observe(dicePopup, {
-                childList: true
-            });
         }
+        // Attach the observer
+        this.diceObserver.disconnect();
+        this.diceObserver.observe(dicePopup, {
+            childList: true
+        });
     },
     teardown: function () {
         this.popupObserver.disconnect();

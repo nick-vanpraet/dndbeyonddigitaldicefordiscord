@@ -1,6 +1,6 @@
 body {
     background-color: #1B9AF0;
-    width: 700px;
+    min-width: 700px;
     height: auto;
     padding: 0 10px 10px;
     font-weight: 700;
@@ -10,6 +10,21 @@ body {
 
 * {
     outline: none;
+}
+
+#message-container {
+    transition: opacity 2s;
+    display: block;
+    padding: 1rem;
+    position: absolute;
+    top: 0;
+    z-index: 999;
+    background-color: green;
+    opacity: 1;
+    pointer-events: none;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%)
 }
 
 form section {

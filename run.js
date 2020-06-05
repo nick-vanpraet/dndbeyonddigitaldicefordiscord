@@ -41,7 +41,7 @@ var DnDiscord = {
     active: false,
     destination: null,
     template: `
-    <div id="dndiscord-connection-status" style="margin-top: -18px; height: 18px;width: 100%;text-align: right;background-color: BGR; color: #fff">
+    <div id="dndiscord-connection-status" style="width: 100%;text-align: right;background-color: BGR; color: #fff">
         <p>This character's connection to a Discord channel is currently {status}.</p>
     </div>
     `,
@@ -148,7 +148,7 @@ var DnDiscord = {
             connectionStatusElement.parentNode.removeChild(connectionStatusElement);
         }
         connectionStatusElement = this.createConnectionStatusHtmlElement();
-        document.body.appendChild(connectionStatusElement);
+        document.getElementsByClassName('ct-character-sheet__inner')[0].appendChild(connectionStatusElement);
         // console.log('writing connection status');
     },
     createConnectionStatusHtmlElement: function () {

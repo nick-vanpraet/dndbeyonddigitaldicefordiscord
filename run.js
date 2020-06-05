@@ -23,20 +23,6 @@ chrome.runtime.onMessage.addListener(
         return true;
     });
 
-// Listen to loss and gain of focus and run on change. Bit heavyhanded
-// but MutationObserver seemed to stop working when spinning up if a character
-// gets activated in the popup from another tab.
-document.addEventListener('visibilitychange', function () {
-    chrome.storage.sync.get(['data'], function (result) {
-        let data = result.data;
-        data.forEach(function (item, index) {
-            if (item.character === currentLocation) {
-                DnDiscord.run(item.active, item.destination);
-            }
-        });
-    });
-})
-
 var DnDiscord = {
     active: false,
     destination: null,
@@ -50,7 +36,7 @@ var DnDiscord = {
         // console.log('starting run!')
         this.active = active;
         this.destination = destination;
-        if (this.active && this.destination && document.visibilityState == 'visible') {
+        if (this.active && this.destination) {
             // console.log('spinning up');
             this.spinUp();
         } else {
@@ -128,19 +114,12 @@ var DnDiscord = {
     teardown: function () {
         this.popupObserver.disconnect();
         this.diceObserver.disconnect();
-        this.deleteDicePopup();
     },
     spinUp: function () {
         this.ensureObservation();
         this.popupObserver.observe(document.body, {
             childList: true
         });
-    },
-    deleteDicePopup: function () {
-        let dicePopup = document.getElementById('noty_layout__bottomRight');
-        if (dicePopup !== null) {
-            dicePopup.parentNode.removeChild(dicePopup);
-        }
     },
     showConnectionStatus: function () {
         let connectionStatusElement = document.getElementById('dndiscord-connection-status');

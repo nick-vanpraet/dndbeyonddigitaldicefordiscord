@@ -8,7 +8,6 @@
     "default_popup": "init.html"
   },
   "permissions": [
-    "activeTab",
     "storage",
     "tabs"
   ],

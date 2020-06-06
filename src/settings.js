@@ -22,7 +22,7 @@ const CharacterManager = {
                                 <label class="mdl-textfield__label" for="character_name-{uuid}">Character Name</label>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield">
-                                <input class="dd4d-listen-change mdl-textfield__input dd4d-character-sheet" type="text" id="character_page-{uuid}" name="character" data-character="{uuid}" data-replace-char required>
+                                <input class="dd4d-listen-change mdl-textfield__input dd4d-character-sheet" type="text" id="character_page-{uuid}" name="character" data-character="{uuid}" data-replace-char required pattern="https:\\/\\/www\\.dndbeyond.com\\/profile\\/.*\\/characters\\/[0-9]+$" title="D&D Beyond Character Sheet Link">
                                 <label class="mdl-textfield__label" for="character_page-{uuid}">D&D Beyond Character Sheet</label>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield">
@@ -32,7 +32,7 @@ const CharacterManager = {
                         </form>
                     </div>
                     <div class="mdl-card__menu">
-                        <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect dd4d-beyond-link" data-character="{uuid}">
+                        <button id="dd4d-beyond-link-{uuid}" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect dd4d-beyond-link" data-character="{uuid}">
                             <i class="material-icons">open_in_new</i>
                         </button>
                     </div>
@@ -98,6 +98,7 @@ const CharacterManager = {
     },
     saveCharacter: function (uuid, data) {
         this.data[uuid] = data;
+        this.insertCharacterAvatar(uuid);
         this.saveAllCharacterData(this.data);
     },
     deleteCharacter: function (uuid) {
@@ -137,6 +138,7 @@ const CharacterManager = {
         let newFields = CharacterManager.htmlToElement(CharacterManager.template, uuid, data);
         let insertHere = document.getElementById('dd4d-add-character-container');
         insertHere.parentNode.insertBefore(newFields, insertHere);
+        this.insertCharacterAvatar(uuid);
         CharacterManager.addCharacterListeners(newFields);
     },
     addCharacterListeners: function (fieldset) {
@@ -160,12 +162,17 @@ const CharacterManager = {
             })
         }
         let forms = fieldset.getElementsByTagName('form');
-        console.log(forms);
         for (let i = 0; i < forms.length; i++) {
             forms.item(i).addEventListener('submit', function (e) {
                 e.preventDefault();
                 CharacterManager.handleCharacterFormSubmit(e.submitter.dataset.character)
                 return false;
+            })
+        }
+        let links = fieldset.getElementsByClassName('dd4d-beyond-link')
+        for (let i = 0; i < links.length; i++) {
+            links.item(i).addEventListener('click', function (e) {
+                window.open(CharacterManager.getCharacter(this.dataset.character).character);
             })
         }
     },
@@ -202,5 +209,28 @@ const CharacterManager = {
             }
         })
         CharacterManager.saveCharacter(uuid, Character);
+    },
+    insertCharacterAvatar: function (uuid) {
+        let character = this.getCharacter(uuid);
+        fetch(character.character + '/json')
+            .then(res => res.json())
+            .then((out) => {
+                let html = '<img src="' + out.character.avatarUrl + '" height="32px" width="32px">';
+                let e = document.createElement('template');
+                html = html.trim();
+                e.innerHTML = html;
+                let target = document.getElementById("dd4d-beyond-link-" + uuid);
+                target.innerHTML = '';
+                target.appendChild(e.content.firstChild);
+            })
+            .catch(err => {
+                let html = '<i class="material-icons">open_in_new</i>';
+                let e = document.createElement('template');
+                html = html.trim();
+                e.innerHTML = html;
+                let target = document.getElementById("dd4d-beyond-link-" + uuid);
+                target.innerHTML = '';
+                target.appendChild(e.content.firstChild);
+            });
     }
 }

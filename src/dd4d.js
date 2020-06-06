@@ -3,10 +3,8 @@ var currentLocation = [location.protocol, '//', location.host, location.pathname
 // Load data and run if match is found.
 chrome.storage.sync.get(['characters'], function (result) {
     let data = result.characters;
-    console.log(data);
     for (const property in data) {
         if (data[property].character === currentLocation) {
-            // console.log(item);
             DD4D.run(data[property].active, data[property].destination);
         }
     }
@@ -36,22 +34,17 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
         if (JSON.stringify(original) === JSON.stringify(updated)) {
             // Nothing has changed, so there's no reason to rerun anything.
-            console.log('nothing has changed');
         } else {
             // Something has changed!
-            console.log('something has changed');
             if (!isEmpty(original) && isEmpty(updated)) {
                 DD4D.teardown();
                 DD4D.hideConnectionStatus();
-                console.log('removed!');
             }
             if (isEmpty(original) && !isEmpty(updated)) {
                 DD4D.run(updated.active, updated.destination)
-                console.log('new!')
             }
             if (!isEmpty(original) && !isEmpty(updated)) {
                 DD4D.run(updated.active, updated.destination)
-                console.log('updated!')
             }
         }
     }
@@ -90,10 +83,8 @@ var DD4D = {
         this.active = active;
         this.destination = destination;
         if (this.active && this.destination) {
-            console.log('spinning up');
             this.spinUp();
         } else {
-            console.log('tearing down')
             this.teardown();
         }
         this.showConnectionStatus();
@@ -112,14 +103,11 @@ var DD4D = {
                         rolledTotal: newNode.getElementsByClassName('dice_result__total')[0].textContent
                     };
 
-                    let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
-
+                    // let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
                     // Do an extra check here before sending
                     if (DD4D.active && DD4D.destination) {
-                        // console.log('sending to ' + DD4D.destination)
                         DD4D.sendToDiscord(results);
                     }
-                    // console.log(msg);
                 }
             }
         })

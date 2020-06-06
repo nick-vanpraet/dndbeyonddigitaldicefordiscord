@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Digital Dice for Discord",
   "description": "D&D Beyond Digital Dice Discord Plugin. Lets you send your rolls on a D&D Beyond character sheet to a Discord channel.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "short_name": "DD4D",
   "browser_action": {
     "default_icon": {

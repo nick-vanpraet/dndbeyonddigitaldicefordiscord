@@ -1,4 +1,4 @@
-SHELL=/bin/bashtest
+SHELL=/bin/bash
 
 iconsrc := store/icons/icon-512.png
 icondir := src/images/icons

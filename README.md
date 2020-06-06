@@ -17,3 +17,11 @@ You can also toggle the "Active" state. A character present in this extension's 
 blue bar at the bottom of their character sheet depending on its active state. If it's red, no rolls will be sent to 
 Discord. If it's blue, they will be sent. If you don't see a bar at all, that character hasn't been connected to 
 Discord yet (or something has gone wrong).
+
+![alt text](store/slides/discord-msg.png "The dice roll after it is sent to Discord.")
+
+![alt text](store/slides/settings.png "The settings pane.")
+
+![alt text](store/slides/tinkconnected.png "Connected.")
+
+![alt text](store/slides/tinkdisconnected.png "Disconnected.")

@@ -12,9 +12,10 @@
 
 .demo-card-event > .mdl-card__actions {
     display: flex;
-    box-sizing:border-box;
+    box-sizing: border-box;
     align-items: center;
 }
+
 .demo-card-event > .mdl-card__actions > .material-icons {
     padding-right: 10px;
 }
@@ -34,79 +35,3 @@ form {
 .mdl-card {
     width: auto;
 }
-/*body {*/
-/*    background-color: #1B9AF0;*/
-/*    padding: 0 10px 10px;*/
-/*    font-weight: 700;*/
-/*    color: white;*/
-/*    font-family: Roboto, Helvetica, sans-serif;*/
-/*}*/
-
-/*form {*/
-/*    max-width: 1029px;*/
-/*}*/
-
-/** {*/
-/*    outline: none;*/
-/*}*/
-
-/*#message-container {*/
-/*    transition: opacity 2s;*/
-/*    display: block;*/
-/*    padding: 1rem;*/
-/*    position: absolute;*/
-/*    top: 0;*/
-/*    z-index: 999;*/
-/*    background-color: green;*/
-/*    opacity: 1;*/
-/*    pointer-events: none;*/
-/*    left: 50%;*/
-/*    -webkit-transform: translateX(-50%);*/
-/*    transform: translateX(-50%)*/
-/*}*/
-
-/*form section {*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    justify-content: flex-start;*/
-/*    align-items: stretch;*/
-/*    border: 2px #fff solid;*/
-/*    margin: 10px 0;*/
-/*}*/
-
-/*form section fieldset {*/
-/*    align-self: center;*/
-/*    border: none;*/
-/*    margin: 0;*/
-/*    padding: 10px;*/
-/*}*/
-
-/*input[type=button], input[type=submit] {*/
-/*    display: inline-block;*/
-/*    padding: 0.35em 1.2em;*/
-/*    border: 0.1em solid #FFFFFF;*/
-/*    border-radius: 0.12em;*/
-/*    box-sizing: border-box;*/
-/*    text-decoration: none;*/
-/*    font-family: 'Roboto', sans-serif;*/
-/*    font-weight: 300;*/
-/*    color: #FFFFFF;*/
-/*    text-align: center;*/
-/*    background: transparent;*/
-/*    margin: 0;*/
-/*    outline: none;*/
-/*}*/
-
-/*input[type=button]:hover, input[type=submit]:hover {*/
-/*    color: #000000;*/
-/*    background-color: #FFFFFF;*/
-/*    cursor: pointer;*/
-/*    transition: background-color 0.2s, color 0.2s;*/
-/*}*/
-
-/*@media all and (max-width: 30em) {*/
-/*     input[type=button], input[type=submit] {*/
-/*        display: block;*/
-/*        margin: 0.4em auto;*/
-/*    }*/
-/*}*/

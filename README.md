@@ -1,6 +1,6 @@
 ##### This is a simple Extension which allows you to send your Digital Dice rolls from your D&D Beyond character sheet to a Discord channel.
 
-Developer nstallation:
+Developer installation:
 1. Download this repo and unzip it
 2. Go to chrome://extensions and enable "developer mode" (top right toggle)
 3. Click "Load unpacked" in the top left and select the "src" folder inside this repo

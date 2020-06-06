@@ -1,8 +1,14 @@
 var counter = 0;
 
+// Don't allow query parameters or fragments so our background.js
+// can always detect the presence of this tab when requested.
+const validPath = window.location.protocol + '//' + window.location.host + window.location.pathname;
+if (window.location.href !== validPath) {
+    window.location.replace(validPath);
+}
 
 var template = `
-	<section id="character-{index}" style="display: none" data-counter="{index}">
+	<section id="character-{index}" data-counter="{index}">
 		<fieldset>
 			<label for="active">Active</label>
 		  	<input type="checkbox" class="active" name="active-{index}" data-replace-check>
@@ -111,10 +117,8 @@ function addRemoveListeners(fieldset) {
 
 function addCharacterFields(data) {
     counter++;
-    var newFields = htmlToElement(template, counter, data);
-    newFields.style.display = 'flex';
-
-    var insertHere = document.getElementById('writeroot');
+    let newFields = htmlToElement(template, counter, data);
+    let insertHere = document.getElementById('inserthere');
     insertHere.parentNode.insertBefore(newFields, insertHere);
     addRemoveListeners(newFields);
 }
@@ -123,23 +127,20 @@ function removeCharacterFields(e) {
     e.parentNode.parentNode.parentNode.removeChild(e.parentNode.parentNode);
 }
 
-function load() {
+function init() {
     chrome.storage.sync.get(['data'], function (result) {
         let data = result.data;
         data.forEach(function (item, index) {
             addCharacterFields(item);
         });
     });
-}
-
-
-function init() {
-    load();
     document.getElementById('addcharacter').addEventListener("click", function (e) {
         addCharacterFields();
     });
     document.getElementById('characterform').addEventListener("submit", function (e) {
-        return processFormSubmit(e);
+        e.preventDefault();
+        processFormSubmit(e);
+        window.location.reload(true);
     })
     chrome.storage.local.get(['message'], function (result) {
         console.log(result);
@@ -162,18 +163,3 @@ function init() {
 
 
 document.addEventListener('DOMContentLoaded', init, false);
-// init();
-
-/*
-document.addEventListener('DOMContentLoaded', function() {
-	var checkPageButton = document.getElementById('connect');
-	checkPageButton.addEventListener('click', function() {
-
-		chrome.tabs.executeScript({
-			file: 'run.js'
-		});
-
-
-	}, false);
-}, false);
-*/

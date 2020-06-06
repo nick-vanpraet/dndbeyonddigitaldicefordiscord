@@ -5,25 +5,28 @@
   "version": "0.0.1",
   "short_name": "DD4D",
   "browser_action": {
-    "default_popup": "init.html",
     "default_icon": {
-      "16": "images/icons/icon16.png",
-      "24": "images/icons/icon24.png",
-      "32": "images/icons/icon32.png"
+      "16": "images/icons/icon-16.png",
+      "24": "images/icons/icon-24.png",
+      "32": "images/icons/icon-32.png"
     }
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
   },
   "permissions": [
     "storage",
     "tabs"
   ],
   "icons": {
-    "16": "images/icons/icon16.png",
-    "24": "images/icons/icon24.png",
-    "32": "images/icons/icon32.png",
-    "48": "images/icons/icon48.png",
-    "64": "images/icons/icon64.png",
-    "128": "images/icons/icon128.png",
-    "256": "images/icons/icon256.png"
+    "16": "images/icons/icon-16.png",
+    "24": "images/icons/icon-24.png",
+    "32": "images/icons/icon-32.png",
+    "48": "images/icons/icon-48.png",
+    "64": "images/icons/icon-64.png",
+    "128": "images/icons/icon-128.png",
+    "256": "images/icons/icon-256.png"
   },
   "content_scripts": [
     {
@@ -34,7 +37,7 @@
         "https://www.dndbeyond.com/profile/*/characters/*/*"
       ],
       "js": [
-        "run.js"
+        "dd4d.js"
       ]
     }
   ]

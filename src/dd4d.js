@@ -11,7 +11,7 @@ chrome.storage.sync.get(['data'], function (result) {
     });
 });
 
-// Listen to save event from popup and run if match is found.
+// Listen to save event from settings and run if match is found.
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
         let data = request.data;

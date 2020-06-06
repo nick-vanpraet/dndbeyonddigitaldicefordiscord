@@ -8,6 +8,10 @@ body {
     font-family: Roboto, Helvetica, sans-serif;
 }
 
+form {
+    max-width: 1029px;
+}
+
 * {
     outline: none;
 }
@@ -39,6 +43,8 @@ form section {
 form section fieldset {
     align-self: center;
     border: none;
+    margin: 0;
+    padding: 10px;
 }
 
 input[type=button], input[type=submit] {

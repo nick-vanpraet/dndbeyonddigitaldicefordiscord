@@ -1,0 +1,41 @@
+{
+  "manifest_version": 2,
+  "name": "Digital Dice for Discord",
+  "description": "D&D Beyond Digital Dice Discord Plugin. Lets you send your rolls on a D&D Beyond character sheet to a Discord channel.",
+  "version": "0.0.1",
+  "short_name": "DD4D",
+  "browser_action": {
+    "default_popup": "init.html",
+    "default_icon": {
+      "16": "images/icons/icon16.png",
+      "24": "images/icons/icon24.png",
+      "32": "images/icons/icon32.png"
+    }
+  },
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "icons": {
+    "16": "images/icons/icon16.png",
+    "24": "images/icons/icon24.png",
+    "32": "images/icons/icon32.png",
+    "48": "images/icons/icon48.png",
+    "64": "images/icons/icon64.png",
+    "128": "images/icons/icon128.png",
+    "256": "images/icons/icon256.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.dndbeyond.com/profile/*/characters/*"
+      ],
+      "exclude_matches": [
+        "https://www.dndbeyond.com/profile/*/characters/*/*"
+      ],
+      "js": [
+        "run.js"
+      ]
+    }
+  ]
+}

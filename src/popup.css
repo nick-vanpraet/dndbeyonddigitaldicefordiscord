@@ -41,7 +41,7 @@ form section fieldset {
     border: none;
 }
 
-a.button1, input[type=button], input[type=submit] {
+input[type=button], input[type=submit] {
     display: inline-block;
     padding: 0.35em 1.2em;
     border: 0.1em solid #FFFFFF;
@@ -57,7 +57,7 @@ a.button1, input[type=button], input[type=submit] {
     outline: none;
 }
 
-a.button1:hover, input[type=button]:hover, input[type=submit]:hover {
+input[type=button]:hover, input[type=submit]:hover {
     color: #000000;
     background-color: #FFFFFF;
     cursor: pointer;
@@ -65,7 +65,7 @@ a.button1:hover, input[type=button]:hover, input[type=submit]:hover {
 }
 
 @media all and (max-width: 30em) {
-     a.button1, input[type=button], input[type=submit] {
+     input[type=button], input[type=submit] {
         display: block;
         margin: 0.4em auto;
     }

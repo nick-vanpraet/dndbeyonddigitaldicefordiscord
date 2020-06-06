@@ -6,7 +6,7 @@ chrome.storage.sync.get(['data'], function (result) {
     data.forEach(function (item, index) {
         if (item.character === currentLocation) {
             // console.log(item);
-            DnDiscord.run(item.active, item.destination);
+            DD4D.run(item.active, item.destination);
         }
     });
 });
@@ -17,17 +17,17 @@ chrome.runtime.onMessage.addListener(
         let data = request.data;
         data.forEach(function (item, index) {
             if (item.character === currentLocation) {
-                DnDiscord.run(item.active, item.destination);
+                DD4D.run(item.active, item.destination);
             }
         });
         return true;
     });
 
-var DnDiscord = {
+var DD4D = {
     active: false,
     destination: null,
     template: `
-    <div id="dndiscord-connection-status" style="width: 100%;text-align: right;background-color: BGR; color: #fff">
+    <div id="dd4d-connection-status" style="width: 100%;text-align: right;background-color: BGR; color: #fff">
         <p>This character's connection to a Discord channel is currently {status}.</p>
     </div>
     `,
@@ -62,9 +62,9 @@ var DnDiscord = {
                     let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
 
                     // Do an extra check here before sending
-                    if (DnDiscord.active && DnDiscord.destination) {
-                        // console.log('sending to ' + DnDiscord.destination)
-                        DnDiscord.sendToDiscord(results);
+                    if (DD4D.active && DD4D.destination) {
+                        // console.log('sending to ' + DD4D.destination)
+                        DD4D.sendToDiscord(results);
                     }
                     // console.log(msg);
                 }
@@ -72,7 +72,7 @@ var DnDiscord = {
         })
     }),
     popupObserver: new MutationObserver(function (mutations) {
-        DnDiscord.ensureObservation();
+        DD4D.ensureObservation();
     }),
     sendToDiscord: function (results) {
         let payload = {
@@ -84,14 +84,14 @@ var DnDiscord = {
                     "author": {
                         "name": results.character,
                         "url": currentLocation,
-                        "icon_url": DnDiscord.getCharacterAvatar()
+                        "icon_url": DD4D.getCharacterAvatar()
                     },
                     "description": results.rollDetail + results.rollType + " `[" + results.rolledDice + "]`"
                 }
             ]
         }
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", DnDiscord.destination, true);
+        xhr.open("POST", DD4D.destination, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(payload));
     },
@@ -122,7 +122,7 @@ var DnDiscord = {
         });
     },
     showConnectionStatus: function () {
-        let connectionStatusElement = document.getElementById('dndiscord-connection-status');
+        let connectionStatusElement = document.getElementById('dd4d-connection-status');
         if (connectionStatusElement !== null) {
             connectionStatusElement.parentNode.removeChild(connectionStatusElement);
         }

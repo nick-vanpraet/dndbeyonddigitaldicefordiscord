@@ -1,25 +1,80 @@
 var currentLocation = [location.protocol, '//', location.host, location.pathname].join('');
 
 // Load data and run if match is found.
-chrome.storage.sync.get(['data'], function (result) {
-    let data = result.data;
-    data.forEach(function (item, index) {
-        if (item.character === currentLocation) {
+chrome.storage.sync.get(['characters'], function (result) {
+    let data = result.characters;
+    console.log(data);
+    for (const property in data) {
+        if (data[property].character === currentLocation) {
             // console.log(item);
-            DD4D.run(item.active, item.destination);
+            DD4D.run(data[property].active, data[property].destination);
         }
-    });
+    }
 });
+
+// Listen to storage change, run if match is found.
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+    if (namespace !== 'sync') {
+        // Ignore localstorage changes.
+    }
+    if (changes.characters) {
+        let original = {};
+        for (const property in changes.characters.oldValue) {
+            if (changes.characters.oldValue[property].character === currentLocation) {
+                original = changes.characters.oldValue[property];
+            }
+        }
+        let updated = {};
+        for (const property in changes.characters.newValue) {
+            if (changes.characters.newValue[property].character === currentLocation) {
+                updated = changes.characters.newValue[property];
+            }
+        }
+        // Remove name, doesn't matter.
+        delete original.name;
+        delete updated.name;
+
+        if (JSON.stringify(original) === JSON.stringify(updated)) {
+            // Nothing has changed, so there's no reason to rerun anything.
+            console.log('nothing has changed');
+        } else {
+            // Something has changed!
+            console.log('something has changed');
+            if (!isEmpty(original) && isEmpty(updated)) {
+                DD4D.teardown();
+                DD4D.hideConnectionStatus();
+                console.log('removed!');
+            }
+            if (isEmpty(original) && !isEmpty(updated)) {
+                DD4D.run(updated.active, updated.destination)
+                console.log('new!')
+            }
+            if (!isEmpty(original) && !isEmpty(updated)) {
+                DD4D.run(updated.active, updated.destination)
+                console.log('updated!')
+            }
+        }
+    }
+});
+
+function isEmpty(obj) {
+    for (let prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+            return false;
+        }
+    }
+    return JSON.stringify(obj) === JSON.stringify({});
+}
 
 // Listen to save event from settings and run if match is found.
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        let data = request.data;
-        data.forEach(function (item, index) {
-            if (item.character === currentLocation) {
-                DD4D.run(item.active, item.destination);
+        let data = request.characters;
+        for (const property in data) {
+            if (data[property].character === currentLocation) {
+                DD4D.run(data[property].active, data[property].destination);
             }
-        });
+        }
         return true;
     });
 
@@ -32,15 +87,13 @@ var DD4D = {
     </div>
     `,
     run: function (active, destination) {
-        var _this = this;
-        // console.log('starting run!')
         this.active = active;
         this.destination = destination;
         if (this.active && this.destination) {
-            // console.log('spinning up');
+            console.log('spinning up');
             this.spinUp();
         } else {
-            // console.log('tearing down')
+            console.log('tearing down')
             this.teardown();
         }
         this.showConnectionStatus();
@@ -121,14 +174,16 @@ var DD4D = {
             childList: true
         });
     },
-    showConnectionStatus: function () {
+    hideConnectionStatus: function () {
         let connectionStatusElement = document.getElementById('dd4d-connection-status');
         if (connectionStatusElement !== null) {
             connectionStatusElement.parentNode.removeChild(connectionStatusElement);
         }
-        connectionStatusElement = this.createConnectionStatusHtmlElement();
+    },
+    showConnectionStatus: function () {
+        this.hideConnectionStatus();
+        let connectionStatusElement = this.createConnectionStatusHtmlElement();
         document.getElementsByClassName('ct-character-sheet__inner')[0].appendChild(connectionStatusElement);
-        // console.log('writing connection status');
     },
     createConnectionStatusHtmlElement: function () {
         let e = document.createElement('template');

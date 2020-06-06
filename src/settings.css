@@ -1,0 +1,37 @@
+.mdl-layout__drawer-button {
+    line-height: 44px;
+}
+
+.page-content.mdl-grid {
+    max-width: 1200px;
+}
+
+.demo-card-event > .mdl-card__title {
+    align-items: flex-start;
+}
+
+.demo-card-event > .mdl-card__actions {
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.demo-card-event > .mdl-card__actions > .material-icons {
+    padding-right: 10px;
+}
+
+.mdl-layout__header.mdl-layout__header--scroll {
+    display: flex !important;
+}
+
+form {
+    max-width: 100%;
+}
+
+.mdl-card__actions-switch {
+    padding-right: 1.2rem;
+}
+
+.mdl-card {
+    width: auto;
+}

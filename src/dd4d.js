@@ -1,46 +1,90 @@
 var currentLocation = [location.protocol, '//', location.host, location.pathname].join('');
 
 // Load data and run if match is found.
-chrome.storage.sync.get(['data'], function (result) {
-    let data = result.data;
-    data.forEach(function (item, index) {
-        if (item.character === currentLocation) {
-            // console.log(item);
-            DnDiscord.run(item.active, item.destination);
+chrome.storage.sync.get(['characters'], function (result) {
+    let data = result.characters;
+    for (const property in data) {
+        if (data[property].character === currentLocation) {
+            DD4D.run(data[property].active, data[property].destination);
         }
-    });
+    }
 });
 
-// Listen to save event from popup and run if match is found.
+// Listen to storage change, run if match is found.
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+    if (namespace !== 'sync') {
+        // Ignore localstorage changes.
+    }
+    if (changes.characters) {
+        let original = {};
+        for (const property in changes.characters.oldValue) {
+            if (changes.characters.oldValue[property].character === currentLocation) {
+                original = changes.characters.oldValue[property];
+            }
+        }
+        let updated = {};
+        for (const property in changes.characters.newValue) {
+            if (changes.characters.newValue[property].character === currentLocation) {
+                updated = changes.characters.newValue[property];
+            }
+        }
+        // Remove name, doesn't matter.
+        delete original.name;
+        delete updated.name;
+
+        if (JSON.stringify(original) === JSON.stringify(updated)) {
+            // Nothing has changed, so there's no reason to rerun anything.
+        } else {
+            // Something has changed!
+            if (!isEmpty(original) && isEmpty(updated)) {
+                DD4D.teardown();
+                DD4D.hideConnectionStatus();
+            }
+            if (isEmpty(original) && !isEmpty(updated)) {
+                DD4D.run(updated.active, updated.destination)
+            }
+            if (!isEmpty(original) && !isEmpty(updated)) {
+                DD4D.run(updated.active, updated.destination)
+            }
+        }
+    }
+});
+
+function isEmpty(obj) {
+    for (let prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+            return false;
+        }
+    }
+    return JSON.stringify(obj) === JSON.stringify({});
+}
+
+// Listen to save event from settings and run if match is found.
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        let data = request.data;
-        data.forEach(function (item, index) {
-            if (item.character === currentLocation) {
-                DnDiscord.run(item.active, item.destination);
+        let data = request.characters;
+        for (const property in data) {
+            if (data[property].character === currentLocation) {
+                DD4D.run(data[property].active, data[property].destination);
             }
-        });
+        }
         return true;
     });
 
-var DnDiscord = {
+var DD4D = {
     active: false,
     destination: null,
     template: `
-    <div id="dndiscord-connection-status" style="width: 100%;text-align: right;background-color: BGR; color: #fff">
+    <div id="dd4d-connection-status" style="width: 100%;text-align: right;background-color: BGR; color: #fff">
         <p>This character's connection to a Discord channel is currently {status}.</p>
     </div>
     `,
     run: function (active, destination) {
-        var _this = this;
-        // console.log('starting run!')
         this.active = active;
         this.destination = destination;
         if (this.active && this.destination) {
-            // console.log('spinning up');
             this.spinUp();
         } else {
-            // console.log('tearing down')
             this.teardown();
         }
         this.showConnectionStatus();
@@ -59,20 +103,17 @@ var DnDiscord = {
                         rolledTotal: newNode.getElementsByClassName('dice_result__total')[0].textContent
                     };
 
-                    let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
-
+                    // let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
                     // Do an extra check here before sending
-                    if (DnDiscord.active && DnDiscord.destination) {
-                        // console.log('sending to ' + DnDiscord.destination)
-                        DnDiscord.sendToDiscord(results);
+                    if (DD4D.active && DD4D.destination) {
+                        DD4D.sendToDiscord(results);
                     }
-                    // console.log(msg);
                 }
             }
         })
     }),
     popupObserver: new MutationObserver(function (mutations) {
-        DnDiscord.ensureObservation();
+        DD4D.ensureObservation();
     }),
     sendToDiscord: function (results) {
         let payload = {
@@ -84,14 +125,14 @@ var DnDiscord = {
                     "author": {
                         "name": results.character,
                         "url": currentLocation,
-                        "icon_url": DnDiscord.getCharacterAvatar()
+                        "icon_url": DD4D.getCharacterAvatar()
                     },
                     "description": results.rollDetail + results.rollType + " `[" + results.rolledDice + "]`"
                 }
             ]
         }
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", DnDiscord.destination, true);
+        xhr.open("POST", DD4D.destination, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(payload));
     },
@@ -121,14 +162,16 @@ var DnDiscord = {
             childList: true
         });
     },
-    showConnectionStatus: function () {
-        let connectionStatusElement = document.getElementById('dndiscord-connection-status');
+    hideConnectionStatus: function () {
+        let connectionStatusElement = document.getElementById('dd4d-connection-status');
         if (connectionStatusElement !== null) {
             connectionStatusElement.parentNode.removeChild(connectionStatusElement);
         }
-        connectionStatusElement = this.createConnectionStatusHtmlElement();
+    },
+    showConnectionStatus: function () {
+        this.hideConnectionStatus();
+        let connectionStatusElement = this.createConnectionStatusHtmlElement();
         document.getElementsByClassName('ct-character-sheet__inner')[0].appendChild(connectionStatusElement);
-        // console.log('writing connection status');
     },
     createConnectionStatusHtmlElement: function () {
         let e = document.createElement('template');

@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+        @font-face {
+            font-family: 'Material Icons';
+            font-style: normal;
+            font-weight: 400;
+            src: url(fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
+            src: local('Material Icons'),
+            local('MaterialIcons-Regular'),
+            url(fonts/MaterialIcons-Regular.woff2) format('woff2'),
+            url(fonts/MaterialIcons-Regular.woff) format('woff'),
+            url(fonts/MaterialIcons-Regular.ttf) format('truetype');
+        }
+        /* roboto-100 - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 100;
+            src: local('Roboto Thin'), local('Roboto-Thin'),
+            url('fonts/roboto-v20-latin-100.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-100.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-100italic - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: italic;
+            font-weight: 100;
+            src: local('Roboto Thin Italic'), local('Roboto-ThinItalic'),
+            url('fonts/roboto-v20-latin-100italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-100italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-300 - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 300;
+            src: local('Roboto Light'), local('Roboto-Light'),
+            url('fonts/roboto-v20-latin-300.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-300.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-300italic - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: italic;
+            font-weight: 300;
+            src: local('Roboto Light Italic'), local('Roboto-LightItalic'),
+            url('fonts/roboto-v20-latin-300italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-300italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-regular - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Roboto'), local('Roboto-Regular'),
+            url('fonts/roboto-v20-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-italic - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: italic;
+            font-weight: 400;
+            src: local('Roboto Italic'), local('Roboto-Italic'),
+            url('fonts/roboto-v20-latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-500 - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 500;
+            src: local('Roboto Medium'), local('Roboto-Medium'),
+            url('fonts/roboto-v20-latin-500.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-500.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-500italic - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: italic;
+            font-weight: 500;
+            src: local('Roboto Medium Italic'), local('Roboto-MediumItalic'),
+            url('fonts/roboto-v20-latin-500italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-500italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-700 - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 700;
+            src: local('Roboto Bold'), local('Roboto-Bold'),
+            url('fonts/roboto-v20-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-700italic - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: italic;
+            font-weight: 700;
+            src: local('Roboto Bold Italic'), local('Roboto-BoldItalic'),
+            url('fonts/roboto-v20-latin-700italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-700italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-900 - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 900;
+            src: local('Roboto Black'), local('Roboto-Black'),
+            url('fonts/roboto-v20-latin-900.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-900.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+        /* roboto-900italic - latin */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: italic;
+            font-weight: 900;
+            src: local('Roboto Black Italic'), local('Roboto-BlackItalic'),
+            url('fonts/roboto-v20-latin-900italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+            url('fonts/roboto-v20-latin-900italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        }
+    </style>
+    <link rel="stylesheet" href="./mdl/material.min.css">
+    <script src="./mdl/material.min.js"></script>
+    <title>Digital Dice for Discord</title>
+    <script src="settings.js"></script>
+    <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+
+
+<div class="mdl-layout mdl-js-layout">
+    <header class="mdl-layout__header mdl-layout__header--scroll">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">Digital Dice for Discord</span>
+        </div>
+        <div class="mdl-layout__drawer-button">
+            <img src="images/icons/icon-32.png" alt="DD4D"/>
+        </div>
+    </header>
+    <main class="mdl-layout__content">
+        <div id="dd4d-page-content" class="page-content mdl-grid">
+
+            <div id="dd4d-add-character-container" class="mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--8-col-phone">
+                <div class="demo-card-event mdl-card mdl-shadow--2dp">
+                    <div class="mdl-card__title mdl-card--expand">
+                        <form id="dd4d-add-character-form">
+                            <div class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input dd4d-character-name" type="text" id="new_character_name" name="name" required>
+                                <label class="mdl-textfield__label" for="new_character_name">Character Name</label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input dd4d-character-sheet" type="text" id="new_character_page" name="character" required pattern="https:\/\/www\.dndbeyond.com\/profile\/.*\/characters\/[0-9]+$" title="D&D Beyond Character Sheet Link">
+                                <label class="mdl-textfield__label" for="new_character_page">D&D Beyond Character Sheet</label>
+                            </div>
+                            <div class="mdl-textfield mdl-js-textfield">
+                                <input class="mdl-textfield__input dd4d-destination" type="text" id="new_destination_url" name="destination" required>
+                                <label class="mdl-textfield__label" for="new_destination_url">Discord Webhook</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="mdl-card__actions mdl-card--border">
+                        <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="dd4d-add-character" type="submit" form="dd4d-add-character-form">
+                            Add character
+                        </button>
+                        <div class="mdl-layout-spacer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div aria-live="assertive" aria-atomic="true" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar" id="message-container">
+    <div class="mdl-snackbar__text"><i class="material-icons">open_in_new</i></div>
+    <button type="button" class="mdl-snackbar__action"></button>
+</div>
+
+</body>
+</html>

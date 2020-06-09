@@ -40,12 +40,12 @@ Head on over to the [Chrome Web Store](https://chrome.google.com/webstore/detail
 
 ## FAQ
 
-Q: Why this and not Beyond20?
+Q: Why this and not Beyond20?  
 A: Simplicity. If *all* you want is to send your rolls to Discord, this one is easier to set up and you can quickly 
 connect multiple characters to multiple channels. That's it though, so if you want more options or don't mind the 
 initial setup Beyond20 is probably better.
 
-Q: What about Avrae?
+Q: What about Avrae?  
 A: That is currently a Discord bot, and though you can use it to type "roll !stealth" and it will use your character's 
 stats, you can't click the fancy digital dice on dndbeyond.com and have that result sent to your Discord channel. Yet. 
 I'm sure they are working on it and when that day comes this extension will be obsolete.

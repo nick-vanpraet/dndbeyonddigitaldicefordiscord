@@ -1,7 +1,7 @@
 var currentLocation = [location.protocol, '//', location.host, location.pathname].join('');
 
 // Load data and run if match is found.
-chrome.storage.sync.get(['characters'], function (result) {
+chrome.storage.sync.get(['characters'], function(result) {
     let data = result.characters;
     for (const property in data) {
         if (data[property].character === currentLocation) {
@@ -11,7 +11,7 @@ chrome.storage.sync.get(['characters'], function (result) {
 });
 
 // Listen to storage change, run if match is found.
-chrome.storage.onChanged.addListener(function (changes, namespace) {
+chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (namespace !== 'sync') {
         // Ignore localstorage changes.
     }
@@ -61,7 +61,7 @@ function isEmpty(obj) {
 
 // Listen to save event from settings and run if match is found.
 chrome.runtime.onMessage.addListener(
-    function (request, sender, sendResponse) {
+    function(request, sender, sendResponse) {
         let data = request.characters;
         for (const property in data) {
             if (data[property].character === currentLocation) {
@@ -79,7 +79,7 @@ var DD4D = {
         <p>This character's connection to a Discord channel is currently {status}.</p>
     </div>
     `,
-    run: function (active, destination) {
+    run: function(active, destination) {
         this.active = active;
         this.destination = destination;
         if (this.active && this.destination) {
@@ -89,18 +89,28 @@ var DD4D = {
         }
         this.showConnectionStatus();
     },
-    diceObserver: new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
+    getNodeTextContentByClassName: function(node, className, defaultValue = false) {
+        let target = node.getElementsByClassName(className);
+        console.log(target);
+        if (target.length > 0) {
+            return target[0].textContent
+        }
+        return defaultValue;
+    },
+    diceObserver: new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
             if (mutation.addedNodes.length) {
                 let newNode = mutation.addedNodes[0];
                 if (newNode.classList.contains('noty_bar')) {
                     let results = {
-                        character: document.getElementsByClassName('ddbc-character-tidbits__name')[0].textContent,
-                        rollDetail: newNode.getElementsByClassName('dice_result__info__rolldetail')[0].textContent,
-                        rollType: newNode.getElementsByClassName('dice_result__rolltype')[0].textContent,
-                        infoBreakdown: newNode.getElementsByClassName('dice_result__info__breakdown')[0].textContent,
-                        rolledDice: newNode.getElementsByClassName('dice_result__info__dicenotation')[0].textContent,
-                        rolledTotal: newNode.getElementsByClassName('dice_result__total-result')[0].textContent
+                        character: DD4D.getNodeTextContentByClassName(document, 'ddbc-character-tidbits__name'),
+                        rollDetail: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__info__rolldetail'),
+                        rollType: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__rolltype'),
+                        infoBreakdown: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__info__breakdown'),
+                        rolledDice: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__info__dicenotation'),
+                        rolledTotal: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-result'),
+                        advantage: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header-advantage'),
+                        disadvantage: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header-disadvantage')
                     };
                     // let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
                     // Do an extra check here before sending
@@ -111,31 +121,71 @@ var DD4D = {
             }
         })
     }),
-    popupObserver: new MutationObserver(function (mutations) {
+    popupObserver: new MutationObserver(function(mutations) {
         DD4D.ensureObservation();
     }),
-    sendToDiscord: function (results) {
+    getMinMaxDiceRollPair: function(string) {
+        let regex = /\((\d+),(\d+)\)(.*)/;
+        let pair = {
+            rest: ''
+        };
+        let matches = string.match(regex);
+
+        if ((1 in matches) && (2 in matches)) {
+            pair.min = matches[1];
+            pair.max = matches[2];
+            if (parseInt(matches[1]) > parseInt(matches[2])) {
+                pair.max = matches[1];
+                pair.min = matches[2];
+            }
+        }
+        if (3 in matches) {
+            pair.rest = matches[3]
+        }
+        return pair;
+    },
+    sendToDiscord: function(results) {
+
+        let description = results.rollDetail + results.rollType + " `[" + results.rolledDice + "]`";
+        let color = 12127179
+        let title = results.infoBreakdown + " = ** " + results.rolledTotal + "**";
+        let author = results.character + " rolls"
+
+        if (results.advantage) {
+            author += " with advantage"
+            minMaxPair = DD4D.getMinMaxDiceRollPair(results.infoBreakdown)
+            title = '(~~' + minMaxPair.min + '~~,**' + minMaxPair.max + '**)' + minMaxPair.rest + " = ** " + results.rolledTotal + "**";
+            //color = 584507
+        }
+        if (results.disadvantage) {
+            author += " with disadvantage"
+            minMaxPair = DD4D.getMinMaxDiceRollPair(results.infoBreakdown)
+            title = '(**' + minMaxPair.min + '**,~~' + minMaxPair.max + '~~)' + minMaxPair.rest + " = ** " + results.rolledTotal + "**";
+            //color = 15403044
+        }
+        author += "!"
+
         let payload = {
-            "embeds": [
-                {
-                    "title": results.infoBreakdown + " = ** " + results.rolledTotal + "**",
-                    "url": "https://discordapp.com",
-                    "color": 12127179,
-                    "author": {
-                        "name": results.character,
-                        "url": currentLocation,
-                        "icon_url": DD4D.getCharacterAvatar()
-                    },
-                    "description": results.rollDetail + results.rollType + " `[" + results.rolledDice + "]`"
-                }
-            ]
+            "embeds": [{
+                "title": title,
+                "url": "https://discordapp.com",
+                "color": color,
+                "author": {
+                    "name": author,
+                    "url": currentLocation
+                },
+                "thumbnail": {
+                    "url": DD4D.getCharacterAvatar()
+                },
+                "description": description
+            }]
         }
         let xhr = new XMLHttpRequest();
         xhr.open("POST", DD4D.destination, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(JSON.stringify(payload));
     },
-    ensureObservation: function () {
+    ensureObservation: function() {
         let dicePopup = document.getElementById('noty_layout__bottomRight');
         if (dicePopup === null) {
             dicePopup = document.createElement('div');
@@ -151,28 +201,28 @@ var DD4D = {
             childList: true
         });
     },
-    teardown: function () {
+    teardown: function() {
         this.popupObserver.disconnect();
         this.diceObserver.disconnect();
     },
-    spinUp: function () {
+    spinUp: function() {
         this.ensureObservation();
         this.popupObserver.observe(document.body, {
             childList: true
         });
     },
-    hideConnectionStatus: function () {
+    hideConnectionStatus: function() {
         let connectionStatusElement = document.getElementById('dd4d-connection-status');
         if (connectionStatusElement !== null) {
             connectionStatusElement.parentNode.removeChild(connectionStatusElement);
         }
     },
-    showConnectionStatus: function () {
+    showConnectionStatus: function() {
         this.hideConnectionStatus();
         let connectionStatusElement = this.createConnectionStatusHtmlElement();
         document.getElementsByClassName('ct-character-sheet__inner')[0].appendChild(connectionStatusElement);
     },
-    createConnectionStatusHtmlElement: function () {
+    createConnectionStatusHtmlElement: function() {
         let e = document.createElement('template');
         let html = this.template.trim();
         html = html.replace(/{status}/g, this.active ? 'active' : 'inactive');
@@ -180,7 +230,7 @@ var DD4D = {
         e.innerHTML = html;
         return e.content.firstChild;
     },
-    getCharacterAvatar: function () {
+    getCharacterAvatar: function() {
         let img = document.getElementsByClassName('ddbc-character-tidbits__avatar')[0];
         let style = img.currentStyle || window.getComputedStyle(img, false);
         return style.backgroundImage.slice(4, -1).replace(/"/g, "");

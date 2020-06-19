@@ -177,7 +177,15 @@ var DD4D = {
                 "thumbnail": {
                     "url": DD4D.getCharacterAvatar()
                 },
-                "description": description
+                "fields": [{
+                    "name": "Type",
+                    "value": results.rollDetail + results.rollType,
+                    "inline": true
+                }, {
+                    "name": "Dice",
+                    "value": "`[" + results.rolledDice + "]`",
+                    "inline": true
+                }],
             }]
         }
         let xhr = new XMLHttpRequest();

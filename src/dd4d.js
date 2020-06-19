@@ -100,9 +100,8 @@ var DD4D = {
                         rollType: newNode.getElementsByClassName('dice_result__rolltype')[0].textContent,
                         infoBreakdown: newNode.getElementsByClassName('dice_result__info__breakdown')[0].textContent,
                         rolledDice: newNode.getElementsByClassName('dice_result__info__dicenotation')[0].textContent,
-                        rolledTotal: newNode.getElementsByClassName('dice_result__total')[0].textContent
+                        rolledTotal: newNode.getElementsByClassName('dice_result__total-result')[0].textContent
                     };
-
                     // let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
                     // Do an extra check here before sending
                     if (DD4D.active && DD4D.destination) {

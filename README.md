@@ -11,6 +11,8 @@ Enter name, character sheet, and Discord webhook* for the channel to send your r
 That's it, ready to roll. You can disconnect your character from Discord by using the toggle, or completely remove 
 your character from this extension by clicking "Remove".
 
+Now with support for the newly added "advantage/disadvantage" rolling on dndbeyond!
+
 (\*) This extension is not affiliated with WotC, D&D Beyond or Discord. It is meant to integrate their stuff 
 though so I kind of have to mention them.  
 (\*\*) Request a webhook for the Discord channel you'll be playing in from the Discord channel administrator 
@@ -53,6 +55,8 @@ I'm sure they are working on it and when that day comes this extension will be o
 ## Images
 
 ![alt text](store/slides/discord-msg.png "The dice roll after it is sent to Discord.")
+
+![alt text](store/slides/sendtodiscord.png "Sending to Discord.")
 
 ![alt text](store/slides/settings.png "The settings pane.")
 

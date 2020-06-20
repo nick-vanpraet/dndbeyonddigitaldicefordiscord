@@ -7,7 +7,7 @@ if (window.location.href !== validPath) {
     window.location.replace(validPath);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     CharacterManager.init();
 }, false);
 
@@ -52,13 +52,13 @@ const CharacterManager = {
             </div>
 `,
     data: {},
-    init: function () {
+    init: function() {
         this.loadAllCharacterData();
         this.setUpNewCharacterCreationListener();
     },
-    setUpNewCharacterCreationListener: function () {
+    setUpNewCharacterCreationListener: function() {
         // Setup listener for "create new character" submit.
-        document.getElementById('dd4d-add-character-form').addEventListener("submit", function (event) {
+        document.getElementById('dd4d-add-character-form').addEventListener("submit", function(event) {
             let [uuid, character] = CharacterManager.createCharacter();
             CharacterManager.addCharacterFields(uuid, character);
             event.preventDefault();
@@ -70,21 +70,21 @@ const CharacterManager = {
             componentHandler.upgradeDom();
         });
     },
-    loadAllCharacterData: function () {
-        chrome.storage.sync.get(['characters'], function (result) {
+    loadAllCharacterData: function() {
+        chrome.storage.sync.get(['characters'], function(result) {
             CharacterManager.data = result.characters || {};
             CharacterManager.buildCharacterCards();
         });
     },
-    snackbarContainer: function () {
+    snackbarContainer: function() {
         return document.getElementById('message-container');
     },
-    closeSnackbar: function () {
+    closeSnackbar: function() {
         let snackbarContainer = CharacterManager.snackbarContainer();
         snackbarContainer.classList.remove('mdl-snackbar--active');
         snackbarContainer.setAttribute("aria-hidden", "true");
     },
-    openSnackBar: function () {
+    openSnackBar: function() {
         CharacterManager.closeSnackbar();
         const data = {
             message: 'Saved changes',
@@ -93,32 +93,32 @@ const CharacterManager = {
         };
         CharacterManager.snackbarContainer().MaterialSnackbar.showSnackbar(data);
     },
-    getCharacter: function (uuid) {
+    getCharacter: function(uuid) {
         return this.data[uuid] || {}
     },
-    saveCharacter: function (uuid, data) {
+    saveCharacter: function(uuid, data) {
         this.data[uuid] = data;
         this.insertCharacterAvatar(uuid);
         this.saveAllCharacterData(this.data);
     },
-    deleteCharacter: function (uuid) {
+    deleteCharacter: function(uuid) {
         delete this.data[uuid];
         this.saveAllCharacterData(this.data);
     },
-    saveAllCharacterData: function (data) {
+    saveAllCharacterData: function(data) {
         chrome.storage.sync.set({
             characters: data
-        }, function () {
+        }, function() {
             CharacterManager.openSnackBar();
         });
     },
-    buildCharacterCards: function () {
+    buildCharacterCards: function() {
         for (const property in this.data) {
             CharacterManager.addCharacterFields(property, CharacterManager.getCharacter(property));
         }
         componentHandler.upgradeDom();
     },
-    createCharacter: function () {
+    createCharacter: function() {
         let Character = {
             name: document.getElementById('new_character_name').value,
             character: document.getElementById('new_character_page').value,
@@ -129,28 +129,28 @@ const CharacterManager = {
         CharacterManager.saveCharacter(Character.uuid, Character);
         return [Character.uuid, Character];
     },
-    removeCharacter: function (e) {
+    removeCharacter: function(e) {
         let container = document.getElementById(e.dataset.character);
         container.parentNode.removeChild(container);
         CharacterManager.deleteCharacter(e.dataset.character);
     },
-    addCharacterFields: function (uuid, data) {
+    addCharacterFields: function(uuid, data) {
         let newFields = CharacterManager.htmlToElement(CharacterManager.template, uuid, data);
         let insertHere = document.getElementById('dd4d-add-character-container');
         insertHere.parentNode.insertBefore(newFields, insertHere);
         this.insertCharacterAvatar(uuid);
         CharacterManager.addCharacterListeners(newFields);
     },
-    addCharacterListeners: function (fieldset) {
+    addCharacterListeners: function(fieldset) {
         let removeButtons = fieldset.getElementsByClassName('dd4d-remove');
         for (let i = 0; i < removeButtons.length; i++) {
-            removeButtons.item(i).addEventListener('click', function () {
+            removeButtons.item(i).addEventListener('click', function() {
                 CharacterManager.removeCharacter(this);
             })
         }
         let inputs = fieldset.getElementsByClassName('dd4d-listen-change');
         for (let i = 0; i < inputs.length; i++) {
-            inputs.item(i).addEventListener('change', function () {
+            inputs.item(i).addEventListener('change', function() {
                 let uuid = this.dataset.character;
                 let form = document.getElementById('form-' + uuid);
                 if (form.reportValidity()) {
@@ -163,7 +163,7 @@ const CharacterManager = {
         }
         let forms = fieldset.getElementsByTagName('form');
         for (let i = 0; i < forms.length; i++) {
-            forms.item(i).addEventListener('submit', function (e) {
+            forms.item(i).addEventListener('submit', function(e) {
                 e.preventDefault();
                 CharacterManager.handleCharacterFormSubmit(e.submitter.dataset.character)
                 return false;
@@ -171,12 +171,12 @@ const CharacterManager = {
         }
         let links = fieldset.getElementsByClassName('dd4d-beyond-link')
         for (let i = 0; i < links.length; i++) {
-            links.item(i).addEventListener('click', function (e) {
+            links.item(i).addEventListener('click', function(e) {
                 window.open(CharacterManager.getCharacter(this.dataset.character).character);
             })
         }
     },
-    htmlToElement: function (html, uuid, data = {}) {
+    htmlToElement: function(html, uuid, data = {}) {
         let e = document.createElement('template');
 
         html = html.trim();
@@ -198,11 +198,11 @@ const CharacterManager = {
         e.innerHTML = html;
         return e.content.firstChild;
     },
-    handleCharacterFormSubmit: function (uuid) {
+    handleCharacterFormSubmit: function(uuid) {
         let container = document.getElementById(uuid);
         let Character = CharacterManager.getCharacter(uuid);
         let inputs = container.querySelectorAll('input[data-character="' + uuid + '"]')
-        inputs.forEach(function (element) {
+        inputs.forEach(function(element) {
             Character[element.name] = element.value;
             if (element.type === 'checkbox') {
                 Character[element.name] = element.checked;
@@ -210,12 +210,15 @@ const CharacterManager = {
         })
         CharacterManager.saveCharacter(uuid, Character);
     },
-    insertCharacterAvatar: function (uuid) {
+    insertCharacterAvatar: function(uuid) {
         let character = this.getCharacter(uuid);
-        fetch(character.character + '/json')
+        let characterID = character.character.substring(character.character.lastIndexOf('/') + 1);
+        let proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        let url = 'https://character-service.dndbeyond.com/character/v3/character/' + characterID;
+        fetch(proxyUrl + url)
             .then(res => res.json())
             .then((out) => {
-                let html = '<img src="' + out.character.avatarUrl + '" height="32px" width="32px">';
+                let html = '<img src="' + out.data.avatarUrl + '" height="32px" width="32px">';
                 let e = document.createElement('template');
                 html = html.trim();
                 e.innerHTML = html;

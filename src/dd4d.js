@@ -103,7 +103,7 @@ var DD4D = {
                 let newNode = mutation.addedNodes[0];
                 if (newNode.classList.contains('noty_bar')) {
                     let results = {
-                        character: DD4D.getNodeTextContentByClassName(document, 'ddbc-character-tidbits__name'),
+                        character: DD4D.getNodeTextContentByClassName(document, 'ddbc-character-name'),
                         rollDetail: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__info__rolldetail'),
                         rollType: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__rolltype'),
                         infoBreakdown: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__info__breakdown'),
@@ -239,7 +239,7 @@ var DD4D = {
         return e.content.firstChild;
     },
     getCharacterAvatar: function() {
-        let img = document.getElementsByClassName('ddbc-character-tidbits__avatar')[0];
+        let img = document.getElementsByClassName('ddbc-character-avatar__portrait')[0];
         let style = img.currentStyle || window.getComputedStyle(img, false);
         return style.backgroundImage.slice(4, -1).replace(/"/g, "");
     }

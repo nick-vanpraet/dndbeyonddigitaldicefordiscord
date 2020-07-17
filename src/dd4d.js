@@ -109,8 +109,9 @@ var DD4D = {
                         infoBreakdown: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__info__breakdown'),
                         rolledDice: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__info__dicenotation'),
                         rolledTotal: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-result'),
-                        advantage: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header-advantage'),
-                        disadvantage: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header-disadvantage')
+                        advantage: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header--advantage'),
+                        disadvantage: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header--disadvantage'),
+                        crit: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header--crit')
                     };
                     // let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
                     // Do an extra check here before sending
@@ -162,6 +163,9 @@ var DD4D = {
             minMaxPair = DD4D.getMinMaxDiceRollPair(results.infoBreakdown)
             title = '(**' + minMaxPair.min + '**,~~' + minMaxPair.max + '~~)' + minMaxPair.rest + " = ** " + results.rolledTotal + "**";
             //color = 15403044
+        }
+        if (results.crit) {
+            author += " for a critical hit"
         }
         author += "!"
 

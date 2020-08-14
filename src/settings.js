@@ -195,7 +195,7 @@ const CharacterManager = {
             html = html.replace('data-replace-name', 'value="' + data.name + '"')
         }
 
-        e.innerHTML = html;
+        e.innerHTML = DOMPurify.sanitize(html);
         return e.content.firstChild;
     },
     handleCharacterFormSubmit: function(uuid) {
@@ -221,7 +221,7 @@ const CharacterManager = {
                 let html = '<img src="' + out.data.avatarUrl + '" height="32px" width="32px">';
                 let e = document.createElement('template');
                 html = html.trim();
-                e.innerHTML = html;
+                e.innerHTML = DOMPurify.sanitize(html);
                 let target = document.getElementById("dd4d-beyond-link-" + uuid);
                 target.innerHTML = '';
                 target.appendChild(e.content.firstChild);
@@ -230,7 +230,7 @@ const CharacterManager = {
                 let html = '<i class="material-icons">open_in_new</i>';
                 let e = document.createElement('template');
                 html = html.trim();
-                e.innerHTML = html;
+                e.innerHTML = DOMPurify.sanitize(html);
                 let target = document.getElementById("dd4d-beyond-link-" + uuid);
                 target.innerHTML = '';
                 target.appendChild(e.content.firstChild);

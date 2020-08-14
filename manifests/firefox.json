@@ -13,7 +13,6 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "dndbeyonddigitaldicefordiscord@digitaldice4discord.com",
       "strict_min_version": "79.0"
     }
   },
@@ -45,6 +44,7 @@
         "https://www.dndbeyond.com/profile/*/characters/*/*"
       ],
       "js": [
+        "lib/dompurify/purify.min.js",
         "dd4d.js"
       ]
     }

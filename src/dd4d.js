@@ -239,7 +239,7 @@ var DD4D = {
         let html = this.template.trim();
         html = html.replace(/{status}/g, this.active ? 'active' : 'inactive');
         html = html.replace('BGR', this.active ? '#1B9AF0' : '#FF0000');
-        e.innerHTML = html;
+        e.innerHTML = DOMPurify.sanitize(html);
         return e.content.firstChild;
     },
     getCharacterAvatar: function() {

@@ -12,9 +12,9 @@ $(icondir)/icon-%.png:
 icons: $(iconfiles)
 
 zip: icons
-	cp manifests/chrome.json src/manifest.json
-	cd src; zip -r ../chrome.zip ./; cd ..
 	cp manifests/firefox.json src/manifest.json
 	cd src; zip -r ../firefox.zip ./; cd ..
+	cp manifests/chrome.json src/manifest.json
+	cd src; zip -r ../chrome.zip ./; cd ..
 
 .PHONY: icons zip

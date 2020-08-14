@@ -37,6 +37,7 @@
         "https://www.dndbeyond.com/profile/*/characters/*/*"
       ],
       "js": [
+        "lib/dompurify/purify.min.js",
         "dd4d.js"
       ]
     }

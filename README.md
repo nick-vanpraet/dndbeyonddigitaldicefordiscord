@@ -35,10 +35,22 @@ though so I kind of have to mention them.
 
 Head on over to the [Chrome Web Store](https://chrome.google.com/webstore/detail/digital-dice-for-discord/oihhmjdpffiifofgmhkjimhnbfhelinm) and click "Add to Chrome"!
 
-### Developer installation:
+#### Developer installation:
 1. [Download this repo](https://github.com/nick-vanpraet/dndbeyonddigitaldicefordiscord/archive/master.zip) and unzip it
-2. Go to chrome://extensions and enable "developer mode" (top right toggle)
-3. Click "Load unpacked" in the top left and select the "src" folder inside this repo
+2. Copy the file `chrome.json` located inside the manifests folder to inside the src folder, renaming it to `manifest.json`
+3. Go to chrome://extensions and enable "developer mode" (top right toggle)
+4. Click "Load unpacked" in the top left and select the "src" folder inside this repo
+
+### Firefox (alpha)
+
+Not yet available on the Firefox Addons website.
+
+#### Developer installation:
+1. [Download this repo](https://github.com/nick-vanpraet/dndbeyonddigitaldicefordiscord/archive/master.zip) and unzip it
+2. Copy the file `chrome.json` located inside the `manifests` folder to inside the `src` folder, renaming it to `manifest.json`
+3. Create a zip file of the `src` folder
+4. Make sure your Firefox browser supports unsigned extensions (such as the Nightly build, or Developer Edition)
+5. Go to `about:addons` in Firefox, click the small cogwheel and select 'Install Add-on From File...'
 
 ## FAQ
 

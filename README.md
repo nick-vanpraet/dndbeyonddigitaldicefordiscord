@@ -47,7 +47,7 @@ Not yet available on the Firefox Addons website.
 
 #### Developer installation:
 1. [Download this repo](https://github.com/nick-vanpraet/dndbeyonddigitaldicefordiscord/archive/master.zip) and unzip it
-2. Copy the file `chrome.json` located inside the `manifests` folder to inside the `src` folder, renaming it to `manifest.json`
+2. Copy the file `firefox.json` located inside the `manifests` folder to inside the `src` folder, renaming it to `manifest.json`
 3. Create a zip file of the `src` folder
 4. Make sure your Firefox browser supports unsigned extensions (such as the Nightly build, or Developer Edition)
 5. Go to `about:addons` in Firefox, click the small cogwheel and select 'Install Add-on From File...'

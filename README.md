@@ -41,9 +41,9 @@ Head on over to the [Chrome Web Store](https://chrome.google.com/webstore/detail
 3. Go to chrome://extensions and enable "developer mode" (top right toggle)
 4. Click "Load unpacked" in the top left and select the "src" folder inside this repo
 
-### Firefox (alpha)
+### Firefox
 
-Not yet available on the Firefox Addons website.
+Head on over to the [Firefox Addon Site](https://addons.mozilla.org/en-US/firefox/addon/digital-dice-for-discord/) and click "Add to Firefox"!
 
 #### Developer installation:
 1. [Download this repo](https://github.com/nick-vanpraet/dndbeyonddigitaldicefordiscord/archive/master.zip) and unzip it

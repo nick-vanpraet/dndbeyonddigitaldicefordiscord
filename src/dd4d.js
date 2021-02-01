@@ -76,7 +76,7 @@ var DD4D = {
     destination: null,
     template: `
     <div id="dd4d-connection-status" style="width: 100%;text-align: right;background-color: BGR; color: #fff">
-        <p>This character's connection to a Discord channel is currently {status}.</p>
+        <p>DD4D connection to Discord channel is currently {status}.</p>
     </div>
     `,
     run: function(active, destination) {
@@ -97,6 +97,13 @@ var DD4D = {
         }
         return defaultValue;
     },
+    getNodeTextContentByClassStartsWith: function(node, classStartsWith, defaultValue = false) {
+        let target = node.querySelector('[class^="'+classStartsWith+'"],[class*=" '+classStartsWith+'"]');
+        if (target) {
+            return target.textContent
+        }
+        return defaultValue;
+    },
     diceObserver: new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.addedNodes.length) {
@@ -111,12 +118,51 @@ var DD4D = {
                         rolledTotal: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-result'),
                         advantage: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header--advantage'),
                         disadvantage: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header--disadvantage'),
-                        crit: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header--crit')
+                        crit: DD4D.getNodeTextContentByClassName(newNode, 'dice_result__total-header--crit'),
+                        avatar: DD4D.getCharacterAvatar(),
                     };
                     // let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
                     // Do an extra check here before sending
                     if (DD4D.active && DD4D.destination) {
                         DD4D.sendToDiscord(results);
+                    }
+                }
+            }
+        })
+    }),
+    containsStartsWith: function(list, startsWith) {
+        list.forEach(function (value) {
+            if (value.startsWith(startsWith)) {
+                return true;
+            }
+        });
+        return false;
+    },
+    campaignGameLogObserver: new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                let newNode = mutation.addedNodes[0];
+                if (newNode.tagName == 'LI') {
+                    let infoBreakdown = DD4D.getNodeTextContentByClassStartsWith(newNode, "DiceMessage_Number");
+                    if (infoBreakdown && infoBreakdown.indexOf('?') === -1) {
+                        console.log(infoBreakdown);
+                        let results = {
+                            character: DD4D.getNodeTextContentByClassStartsWith(newNode, 'GameLogEntry_Sender'),
+                            rollDetail: DD4D.getNodeTextContentByClassStartsWith(newNode, "DiceMessage_Action"),
+                            rollType: DD4D.getNodeTextContentByClassStartsWith(newNode, 'DiceMessage_RollType'),
+                            infoBreakdown: DD4D.getNodeTextContentByClassStartsWith(newNode, 'DiceMessage_Number'),
+                            rolledDice: DD4D.getNodeTextContentByClassStartsWith(newNode, 'DiceMessage_Notation'),
+                            rolledTotal: DD4D.getNodeTextContentByClassStartsWith(newNode, 'DiceMessage_Total'),
+                            advantage:DD4D.getNodeTextContentByClassStartsWith(newNode, 'DiceMessage_TotalHeader__advantage'),
+                            disadvantage: DD4D.getNodeTextContentByClassStartsWith(newNode, 'DiceMessage_TotalHeader__disadvantage'),
+                            crit: false, // Currently it doesn't look like the game logs shows anything for this
+                            avatar: DD4D.getGameLogAvatar(newNode)
+                        };
+                        // let msg = results.character + "\n" + results.rollDetail + results.rollType + "\n🎲" + results.infoBreakdown + " = " + results.rolledTotal + "\n" + results.rolledDice;
+                        // Do an extra check here before sending
+                        if (DD4D.active && DD4D.destination) {
+                            DD4D.sendToDiscord(results);
+                        }
                     }
                 }
             }
@@ -146,7 +192,6 @@ var DD4D = {
         return pair;
     },
     sendToDiscord: function(results) {
-
         let description = results.rollDetail + results.rollType + " `[" + results.rolledDice + "]`";
         let color = 12127179
         let title = results.infoBreakdown + " = ** " + results.rolledTotal + "**";
@@ -179,7 +224,7 @@ var DD4D = {
                     "url": currentLocation
                 },
                 "thumbnail": {
-                    "url": DD4D.getCharacterAvatar()
+                    "url": results.avatar
                 },
                 "fields": [{
                     "name": "Type",
@@ -212,10 +257,21 @@ var DD4D = {
         this.diceObserver.observe(dicePopup, {
             childList: true
         });
+
+        let campaignGameLog = document.querySelector('.sidebar__inner');
+        if (campaignGameLog === null || typeof campaignGameLog === 'undefined') {
+            campaignGameLog = document.createElement('div');
+            campaignGameLog.setAttribute('class', 'sidebar__inner');
+            document.body.appendChild(campaignGameLog);
+        }
+        // Attach the observer
+        this.campaignGameLogObserver.disconnect();
+        this.campaignGameLogObserver.observe(campaignGameLog, {subtree: true, childList: true});
     },
     teardown: function() {
         this.popupObserver.disconnect();
         this.diceObserver.disconnect();
+        this.campaignGameLogObserver.disconnect();
     },
     spinUp: function() {
         this.ensureObservation();
@@ -232,7 +288,11 @@ var DD4D = {
     showConnectionStatus: function() {
         this.hideConnectionStatus();
         let connectionStatusElement = this.createConnectionStatusHtmlElement();
-        document.getElementsByClassName('ct-character-sheet__inner')[0].appendChild(connectionStatusElement);
+        let target = document.getElementsByClassName('ct-character-sheet__inner')[0];
+        if (target === null | typeof target == 'undefined') {
+            target = document.getElementsByClassName('ddb-campaigns-detail-header')[0];
+        }
+        target.appendChild(connectionStatusElement);
     },
     createConnectionStatusHtmlElement: function() {
         let e = document.createElement('template');
@@ -246,5 +306,11 @@ var DD4D = {
         let img = document.getElementsByClassName('ddbc-character-avatar__portrait')[0];
         let style = img.currentStyle || window.getComputedStyle(img, false);
         return style.backgroundImage.slice(4, -1).replace(/"/g, "");
+    },
+    getGameLogAvatar: function(node) {
+        let img = node.querySelector('img[class^="Avatar_AvatarPortrait"],[class*=" Avatar_AvatarPortrait"]');
+        if (img) {
+            return img.src;
+        }
     }
 }

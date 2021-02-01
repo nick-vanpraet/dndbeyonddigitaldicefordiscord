@@ -140,6 +140,7 @@
         <div class="mdl-layout__drawer-button">
             <img src="images/icons/icon-32.png" alt="DD4D"/>
         </div>
+        <div class="mdl-layout__header-row"><p>Campaign capture requires that game log be open on campaign page. Game log on character page is not captured.<br/>Message may send twice if both the campaign & a character within that campaign are enabled to same discord webhook.<p></div>
     </header>
     <main class="mdl-layout__content">
         <div id="dd4d-page-content" class="page-content mdl-grid">
@@ -150,11 +151,11 @@
                         <form id="dd4d-add-character-form">
                             <div class="mdl-textfield mdl-js-textfield">
                                 <input class="mdl-textfield__input dd4d-character-name" type="text" id="new_character_name" name="name" required>
-                                <label class="mdl-textfield__label" for="new_character_name">Character Name</label>
+                                <label class="mdl-textfield__label" for="new_character_name">Campaign or Character Name</label>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield">
-                                <input class="mdl-textfield__input dd4d-character-sheet" type="text" id="new_character_page" name="character" required pattern="https:\/\/www\.dndbeyond.com\/profile\/.*\/characters\/[0-9]+$" title="D&D Beyond Character Sheet Link">
-                                <label class="mdl-textfield__label" for="new_character_page">D&D Beyond Character Sheet</label>
+                                <input class="mdl-textfield__input dd4d-character-sheet" type="text" id="new_character_page" name="character" required pattern="https:\/\/www\.dndbeyond.com\/(profile\/.*\/characters|campaigns)\/[0-9]+$" title="D&D Beyond Campaign or Character Sheet Link">
+                                <label class="mdl-textfield__label" for="new_character_page">D&D Beyond Campaign or Character Sheet</label>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield">
                                 <input class="mdl-textfield__input dd4d-destination" type="text" id="new_destination_url" name="destination" required>
@@ -164,7 +165,7 @@
                     </div>
                     <div class="mdl-card__actions mdl-card--border">
                         <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="dd4d-add-character" type="submit" form="dd4d-add-character-form">
-                            Add character
+                            Add
                         </button>
                         <div class="mdl-layout-spacer"></div>
                     </div>

@@ -31,10 +31,12 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.dndbeyond.com/profile/*/characters/*"
+        "https://www.dndbeyond.com/profile/*/characters/*",
+        "https://www.dndbeyond.com/campaigns/*"
       ],
       "exclude_matches": [
-        "https://www.dndbeyond.com/profile/*/characters/*/*"
+        "https://www.dndbeyond.com/profile/*/characters/*/*",
+        "https://www.dndbeyond.com/campaigns/*/*"
       ],
       "js": [
         "lib/dompurify/purify.min.js",

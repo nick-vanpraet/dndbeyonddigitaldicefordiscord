@@ -22,8 +22,8 @@ const CharacterManager = {
                                 <label class="mdl-textfield__label" for="character_name-{uuid}">Character Name</label>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield">
-                                <input class="dd4d-listen-change mdl-textfield__input dd4d-character-sheet" type="text" id="character_page-{uuid}" name="character" data-character="{uuid}" data-replace-char required pattern="https:\\/\\/www\\.dndbeyond.com\\/profile\\/.*\\/characters\\/[0-9]+$" title="D&D Beyond Character Sheet Link">
-                                <label class="mdl-textfield__label" for="character_page-{uuid}">D&D Beyond Character Sheet</label>
+                                <input class="dd4d-listen-change mdl-textfield__input dd4d-character-sheet" type="text" id="character_page-{uuid}" name="character" data-character="{uuid}" data-replace-char required pattern="https:\\/\\/www\\.dndbeyond.com\\/(profile\\/.*\\/characters|campaigns)\\/[0-9]+$" title="D&D Beyond Campaign or Character Sheet Link">
+                                <label class="mdl-textfield__label" for="character_page-{uuid}">D&D Beyond Campaign or Character Sheet</label>
                             </div>
                             <div class="mdl-textfield mdl-js-textfield">
                                 <input class="dd4d-listen-change mdl-textfield__input dd4d-destination" type="text" id="destination_url-{uuid}" name="destination" data-character="{uuid}" data-replace-destination required>
@@ -212,28 +212,35 @@ const CharacterManager = {
     },
     insertCharacterAvatar: function(uuid) {
         let character = this.getCharacter(uuid);
-        let characterID = character.character.substring(character.character.lastIndexOf('/') + 1);
-        let proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        let url = 'https://character-service.dndbeyond.com/character/v3/character/' + characterID;
-        fetch(proxyUrl + url)
-            .then(res => res.json())
-            .then((out) => {
-                let html = '<img src="' + out.data.avatarUrl + '" height="32px" width="32px">';
-                let e = document.createElement('template');
-                html = html.trim();
-                e.innerHTML = DOMPurify.sanitize(html);
-                let target = document.getElementById("dd4d-beyond-link-" + uuid);
-                target.innerHTML = '';
-                target.appendChild(e.content.firstChild);
-            })
-            .catch(err => {
-                let html = '<i class="material-icons">open_in_new</i>';
-                let e = document.createElement('template');
-                html = html.trim();
-                e.innerHTML = DOMPurify.sanitize(html);
-                let target = document.getElementById("dd4d-beyond-link-" + uuid);
-                target.innerHTML = '';
-                target.appendChild(e.content.firstChild);
-            });
+        if (character.character.indexOf('campaign') === -1) {
+            let characterID = character.character.substring(character.character.lastIndexOf('/') + 1);
+            let proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            let url = 'https://character-service.dndbeyond.com/character/v3/character/' + characterID;
+            fetch(proxyUrl + url)
+                .then(res => res.json())
+                .then((out) => {
+                    let html = '<img src="' + out.data.avatarUrl + '" height="32px" width="32px">';
+                    let e = document.createElement('template');
+                    html = html.trim();
+                    e.innerHTML = DOMPurify.sanitize(html);
+                    let target = document.getElementById("dd4d-beyond-link-" + uuid);
+                    target.innerHTML = '';
+                    target.appendChild(e.content.firstChild);
+                })
+                .catch(err => {
+                    this.insertDefaultAvatar(uuid);
+                });
+            } else {
+                this.insertDefaultAvatar(uuid);
+            }
+    },
+    insertDefaultAvatar: function(uuid) {
+        let html = '<i class="material-icons">open_in_new</i>';
+        let e = document.createElement('template');
+        html = html.trim();
+        e.innerHTML = DOMPurify.sanitize(html);
+        let target = document.getElementById("dd4d-beyond-link-" + uuid);
+        target.innerHTML = '';
+        target.appendChild(e.content.firstChild);
     }
 }
